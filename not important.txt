@@ -1,0 +1,57 @@
+text = init_text.split(' ', 1)[1]
+        sentences = text.split(".")
+        for x in sentences: # loop through sentences
+            parts = nlp(x)
+             # get all words from text that are verbs, nouns or prepositions
+            print(texts)
+            p_sentences.append(texts)
+        for x in p_sentences:
+            n_sentences.append(" ".join(x))
+        message_to_send = ""
+        message_to_send2 = ""
+        word_compare = "compare"
+        if len(message.content.split(';', 1)) >1:
+            word_compare = message.content.split(';', 1)[1]
+        all_sentences = []
+        if "@here" in message.content or "@everyone" in message.content:
+            await message.reply("no", mention_author=True)
+            await message.reply("no", mention_author=True)
+            await message.reply("no", mention_author=True)
+        else:
+            for x in n_sentences:
+                if x == "" :
+                    continue
+                message_to_send+=x+" "
+                sentence_score = 0
+
+                for y in x.split(" "):
+                    word_compare = keys[0].split(" ")[0]
+                    try: 
+                        word_score = model.similarity(word_compare, y)
+                        message_to_send2+="```"+y+" & "+word_compare+" similarity: "+str(word_score)+"``` "
+                    except:
+                        message_to_send2+="```either word "+y+" or "+word_compare+ " are not in model``` "
+                        continue
+                    sentence_score+=word_score
+                message_to_send2+="```sentence score: "+str(sentence_score)+"``` "
+            
+            try :
+                await message.reply(message_to_send.strip(), mention_author=True)
+                await message.reply(message_to_send2.strip(), mention_author=True)
+            except :
+                await message.reply("you have no verbs nouns or prepositions in your message. try again", mention_author=True)
+            item_avg=0
+            choices = []
+            for x in n_sentences:
+                if x == "" :
+                    continue
+                for y in x.split(" "):
+                    for z in keys:
+                        for w in z.split(" "):
+                            word_compare = w
+                            try: 
+                                item_avg+=model.similarity(word_compare, y)
+                            except:
+                                continue
+                        item_avg/=len(n_sentences)
+                    choices.append(item_avg)
