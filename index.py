@@ -5,6 +5,8 @@ from gensim.test.utils import common_texts
 from gensim.models import Word2Vec
 import gensim.downloader
 import pandas as pd
+import json
+
 items_df = pd.read_csv('DeltaTWOW S2 Items - Full Item List.tsv', sep='\t')
 print(items_df)
 keys = items_df['Keys']
@@ -63,6 +65,7 @@ async def on_message(message):
         
                     
             
-            
+with open('config.json', 'r') as f:
+    data = json.load(f)
         
-client.run('ODAxNjU2ODQ2OTI2MzQ4MzI5.GNZCiJ.QrTUut7WiVhXlIP1rEpyF3LeCenfqVoCX2mVFo')
+client.run(data['token'])
