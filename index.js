@@ -100,8 +100,6 @@ client.on('message', message => {
     }
 
 });
-const jsonData = require('./config.json');
-const token = JSON.parse(jsonData)['token'];
 
 // log in
-client.login(token);
+client.login(process.env.TOKEN);
