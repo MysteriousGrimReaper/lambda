@@ -6,9 +6,13 @@ from gensim.models import Word2Vec
 import gensim.downloader
 import pandas as pd
 import json
+import os
+import sys
+import js2py
 
 items_df = pd.read_csv('DeltaTWOW S2 Items - Full Item List.tsv', sep='\t')
 print(items_df)
+sys.stdout.flush()
 keys = items_df['Keys']
 items = items_df['Item']
 
@@ -17,12 +21,22 @@ model = gensim.downloader.load('glove-wiki-gigaword-50')
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
+    sys.stdout.flush()
 
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
-
+    if message.content.startswith('$genvoting'):
+        response_path = os.getcwd()+'\\responses'
+        response_tsvs = os.listdir(response_path)
+        output_responses = pd.read_csv(response_path+'\\'+response_tsvs[0], sep='\t')
+        for x in response_tsvs:
+            output_responses = pd.merge(output_responses, pd.read_csv(response_path+'\\'+x, sep='\t'))
+        print(output_responses)
+        output_responses.to_csv('responses.tsv',sep='\t')
+        await message.channel.send('Voting generated!')
+        sys.stdout.flush()
     if message.content.startswith('$item'):
         nlp = spacy.load("en_core_web_sm")
         doc = nlp(message.content[5:].strip())
@@ -50,15 +64,19 @@ async def on_message(message):
             keychain.append(x)
             scores.append(sentence_score)
             print("keys: "+str(x)+" sentence score: "+str(sentence_score))
+            sys.stdout.flush()
         sort = [x for _,x in sorted(zip(scores,keychain), reverse=True)]
         print(sort)
+        sys.stdout.flush()
         b = (items_df[(items_df['Keys']  == sort[0]) | (items_df['Keys']  == sort[1]) | (items_df['Keys']  == sort[2])].index.tolist())
         print(b)
+        sys.stdout.flush()
         choices = items_df.iloc[b]['Item'].to_numpy()
         choice_icons = items_df.iloc[b]['Icon'].to_numpy()
         message_to_send = "**"+choice_icons[0]+" "+choices[0]+"**\n"+"**"+choice_icons[1]+" "+choices[1]+"**\n"+"**"+choice_icons[2]+" "+choices[2]+"**"
         await message.reply("Your item choices are: \n"+message_to_send, mention_author=True)
         print(choices)
+        sys.stdout.flush()
 
             
 

@@ -8,6 +8,7 @@ const Discord = require('discord.js');
 const { prefix } = require('./config.json');
 const client = new Discord.Client();
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
     if (event.once) {
