@@ -35,7 +35,7 @@ module.exports = {
                     const dataArray = data.split('\n')[1].split('\t').slice(2);
                     shuffleArray(dataArray)
                     console.log(dataArray);
-                    message.channel.send('yay! the responses file exists - generating screen... (does not actually generate screen rn. :troll:)')
+                    message.channel.send('yay! the responses file exists - generating screen... ')
                     const num_factors = [] // number of factors
                     for (let i = 1; i <= dataArray.length; i++) {
                         if (dataArray.length % i == 0) {
